@@ -99,7 +99,6 @@ class Play(NamedTuple):
                 "artistName": self.album_artist,
                 "albumName": self.album,
                 "time": self.time.isoformat() + "Z",
-                "duration": self.duration,
             },
             ensure_ascii=False,
         )

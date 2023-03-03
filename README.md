@@ -30,18 +30,26 @@ TODO
     pip install git+https://github.com/markjoshwel/scribbplyscrobbply
     ```
 
-2. Get the earliest and latest discovered timestamps:
+2. Get date boundary:
 
     ```
-    $ scribbplyscrobbply path-to-files/endsong_*.json
+    $ scribbplyscrobbply path-to-files/endsong_*.json --get-date-boundary
+    note: processed 74043 plays (22888 failed)
+    note: is in format [earliest, latest]
+    ['2021-11-04', '2022-10-14']
     ```
 
-    Change the timestamps as needed, especially if you want to exclude already scrobbled
-    tracks. Timestamps given to scribbplyscrobbply need not have time information. 
+    Change the dates as needed, especially if you want to exclude already scrobbled
+    tracks. The date boundaries are **exclusive**. This means if you set the end boundary
+    to `2023-01-01`, scrobbles past `2022-12-31` are **filtered out**.
 
 3. Generate a JSON:
 
+    ```
+    $ scribbplyscrobbply path-to-files/endsong_*.json > output.json
+    ```
 
+    And voilà!
 
 ## Developing
 
