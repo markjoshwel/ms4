@@ -2,8 +2,8 @@
 scribbplyscrobbply
 ==================
 
-a python script to process your spotify extended streaming history into a last.fm
-scrubbler-friendly json file
+a pure python script to process your spotify extended streaming history jsons into a
+single last.fm scrubbler-friendly json file.
 
 exit codes
     0
@@ -110,23 +110,23 @@ class ScribbplyScrobbply:
     abstraction for handling with spotify extended streaming history endsong_*.json files
 
     methods
-        .takein(selfm, ...)
+        .takein(self, ...)
         .takeout(self, ...)
-    ) -> str:
     """
 
     plays: list[Play] = field(default_factory=list)
     db_start: date = datetime.fromtimestamp(0).date()
     db_end: date = datetime.now().date() + timedelta(1)
 
-    def takein(self, endsongs: list[dict]) -> None | tuple[int, str]:
+    def takein(self, endsongs: list[dict]) -> tuple[int, str, int, int]:
         """
         function for taking in (takein) and processing of a list of parsed json files
 
         endsongs: list[dict]
             a list of parsed json files
 
-        returns None if nominal, else returns a tuple of (error code int, error message str)
+        returns tuple of (result code int, error msg str, processed count, failed count)
+        non-zero result code is failure
         """
         failed: int = 0
 
@@ -173,13 +173,12 @@ class ScribbplyScrobbply:
                     )
 
                 except Exception as err:
-                    return (4, str(err))
+                    return (4, str(err), 0, 0)
 
-        stderr.write(f"note: processed {len(self.plays)} plays ({failed} failed)\n")
         self.db_start = self.plays[0].time.date()
         self.db_end = self.plays[-1].time.date()
 
-        return None
+        return (0, "", len(self.plays), failed)
 
     def takeout(
         self,
@@ -187,7 +186,7 @@ class ScribbplyScrobbply:
         db_end: date | None = None,
         min_s: int = Behaviour([]).min_s,
         format: TakeoutFormats = TakeoutFormats.JSON_SCRUBBLER_WPF,
-    ) -> str:
+    ) -> tuple[int, int, str]:
         """
         exports self.plays into a string for writing out to external applications
 
@@ -202,6 +201,8 @@ class ScribbplyScrobbply:
             scrobble (defaults to Behaviour([]).min_s)
         format: TakeoutFormats = TakeoutFormats.JSON_SCRUBBLER_WPF
             format
+
+        returns tuple of (exported_count, filtered_count, exported_string)
         """
 
         export: list[str] = []
@@ -241,11 +242,7 @@ class ScribbplyScrobbply:
             case _:
                 stderr.write(f"error: takeout: unimplemented format {format}\n")
 
-        stderr.write(
-            f"note: takeout: exported {exported} scrobbles (filtered {filtered})\n"
-        )
-
-        return "".join(export)
+        return (exported, filtered, "".join(export))
 
 
 def handle_args() -> Behaviour:
@@ -351,7 +348,7 @@ def handle_args() -> Behaviour:
     )
 
 
-def cli(bev: Behaviour = handle_args()):
+def cli(bev: Behaviour):
     """
     cli entry function
     note: this function may exit()
@@ -371,16 +368,18 @@ def cli(bev: Behaviour = handle_args()):
 
     ss = ScribbplyScrobbply()
 
-    if (ti_result := ss.takein(endsongs=endsongs)) is not None:
+    if (ti_result := ss.takein(endsongs=endsongs))[0] != 0:
         stderr.write(f"{ti_result[1]}\n")
         exit(ti_result[0])
+
+    stderr.write(f"note: processed {ti_result[2]} ({ti_result[3]} failed)\n")
 
     if bev.db_get:
         stderr.write("note: is in format [earliest, latest]\n")
         print(f"['{ss.db_start.isoformat()}', '{ss.db_end.isoformat()}']")
         exit(0)
 
-    to_result = ss.takeout(
+    exported, filtered, export_string = ss.takeout(
         db_start=bev.db_start,
         db_end=bev.db_end,
         min_s=bev.min_s,
@@ -388,15 +387,19 @@ def cli(bev: Behaviour = handle_args()):
     )
 
     if bev.output is None:
-        print(to_result)
+        print(export_string)
 
     else:
-        bev.output.write_text(to_result, encoding="utf-8")
+        bev.output.write_text(export_string, encoding="utf-8")
+
+    stderr.write(f"note: takeout: exported {exported} scrobbles (filtered {filtered})\n")
 
     exit(0)
 
 
-def gui() -> None:
-    """flet gui framework entry function"""
-    # TODO
-    ...
+def main():
+    cli(handle_args())
+
+
+if __name__ == "__main__":
+    main()

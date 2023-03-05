@@ -1,27 +1,47 @@
 # scribbplyscrobbly
 
+> **Note**  
+>
+> I made scribbplyscrobbply as I thought a) it wasn't processing all of the entries, and
+> b) I wanted to filter by date without manually processing files.
+>
+> So I set out to do just that, with a working command-line program. This is where I
+> learnt that no, scribblyscrobbly wasnt mysteriously skipping entries, but a error for
+> who requested extended data in early 2023.  
+> <https://community.spotify.com/t5/Other-Podcasts-Partners-etc/Extended-data-been-sent-to-me-Missing-data-from-October-to/m-p/5514697>
+>
+> Furthermore, the Flet framework's internal file handling library didn't fully support
+> the web, making efforts for a web frontend futile, evaporating the only reason to use
+> my tool over lilnasy's as the non-technologically-inclined may not want to use a CLI.  
+>
+> tl;dr This project was an accident and a semi-failure, and unless you a) **need** date
+> filtering and b) are comfortable with the command-line, use lilnasy's scribblyscrobbly.
+
 A pure Python script to process your Spotify Extended Streaming History JSONs into a
 single Last.fm Scrubbler-friendly JSON file.
 
+---
+
+Inspired by [lilnasy/scribblyscrobbly](https://github.com/lilnasy/scribblyscrobbly)
+
 - [Usage](#usage)
-    - [Static Web App](#static-web-app)
     - [Command Line](#command-line)
 - [Developing](#developing)
     - [Setup](#setup)
     - [Checking and Formatting](#checking-and-formatting)
-    - [Deploying](#deploying)
 - [Licence](#licence)
 
 ## Usage
 
+<!-- 
 ### Static Web App
 
 TODO
+-->
 
 ### Command Line
 
-> **Info**
->
+> **Note**  
 > You will need Python 3.10 or later.
 
 1. Install scribbplyscrobbply as a package:
@@ -40,13 +60,21 @@ TODO
     ```
 
     Change the dates as needed, especially if you want to exclude already scrobbled
-    tracks. The date boundaries are **exclusive**. This means if you set the end boundary
-    to `2023-01-01`, scrobbles past `2022-12-31` are **filtered out**.
+    tracks. The date boundaries are **inclusive**. This means if you set the end boundary
+    to `2023-01-01`, scrobbles **will** filter out `2023-01-31` and beyond.
 
 3. Generate a JSON:
 
     ```
-    $ scribbplyscrobbply path-to-files/endsong_*.json > output.json
+    scribbplyscrobbply.py data/endsong_*.json --output export.json
+    ```
+
+    If your environment supports pipes:
+
+    ```
+    $ scribbplyscrobbply path-to-files/endsong_*.json > export.json
+    note: processed 74043 (22888 failed)
+    note: takeout: exported 43171 scrobbles (filtered 30872)
     ```
 
     And voilà!
@@ -87,14 +115,20 @@ scribbplyscrobbply uses [black](https://github.com/psf/black),
 to check and format code.
 
 ```
-isort scribbplyscrobbply.py
-black scribbplyscrobbply.py
-mypy scribbplyscrobbply.py
+isort scribbplyscrobbply*.py
+black scribbplyscrobbply*.py
+mypy scribbplyscrobbply*.py
 ```
 
+<!-- 
 ### Deploying
 
-TODO
+1. **Build the static web app**
+    
+    ```
+    flet publish scribbplyscrobbply-gui.py
+    ```
+-->
 
 ## Licence
 
