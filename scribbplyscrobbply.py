@@ -331,6 +331,10 @@ def handle_args() -> Behaviour:
 
     min_s: int = args.ms
 
+    if len(files) == 0:
+        stderr.write("error: specify at least one file\n")
+        exit(1)
+
     for index, file in enumerate(files):
         if not file.exists():
             stderr.write(f"error: {file} does not exist\n")
