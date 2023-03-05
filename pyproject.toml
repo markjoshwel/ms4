@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "scribbplyscrobbply"
-version = "1.0.0"
+version = "1.0.1"
 description = "A Python script to process your spotify extended streaming history into a Last.fm Scrubbler-friendly JSON file"
 authors = ["Mark Joshwel <mark@joshwel.co>"]
 license = "Unlicense"
