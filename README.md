@@ -2,17 +2,22 @@
 
 > **Note**  
 >
-> I made scribbplyscrobbply as I thought a) it wasn't processing all of the entries, and
-> b) I wanted to filter by date without manually processing files.
+> I made scribbplyscrobbply as I thought a) lilnasy's scribblyscrobbly wasn't processing
+> all of the entries, and b) I wanted to filter by date without manually editing files.
 >
 > So I set out to do just that, with a working command-line program. This is where I
-> learnt that no, scribblyscrobbly wasnt mysteriously skipping entries, but a error for
-> who requested extended data in early 2023.  
+> learnt that no, scribblyscrobbly wasnt mysteriously skipping entries, but there was an
+> error for extended history data requested in early 2023, resulting in many nulled
+> entries.  
 > <https://community.spotify.com/t5/Other-Podcasts-Partners-etc/Extended-data-been-sent-to-me-Missing-data-from-October-to/m-p/5514697>
 >
 > Furthermore, the Flet framework's internal file handling library didn't fully support
 > the web, making efforts for a web frontend futile, evaporating the only reason to use
 > my tool over lilnasy's as the non-technologically-inclined may not want to use a CLI.  
+>
+> **I may come back to this project to complete the GUI in the future**, but how long
+> indeterminate said future is indeterminate at time of writing, as the file issue is not
+> directly Flet's fault.
 >
 > tl;dr This project was an accident and a semi-failure, and unless you a) **need** date
 > filtering and b) are comfortable with the command-line, use lilnasy's scribblyscrobbly.
