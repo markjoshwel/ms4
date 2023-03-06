@@ -16,8 +16,8 @@
 > my tool over lilnasy's as the non-technologically-inclined may not want to use a CLI.  
 >
 > **I may come back to this project to complete the GUI in the future**, but how long
-> indeterminate said future is indeterminate at time of writing, as the file issue is not
-> directly Flet's fault.
+> said future is, is indeterminate at time of writing, as the file issue is not directly
+> Flet's fault.
 >
 > tl;dr This project was an accident and a semi-failure, and unless you a) **need** date
 > filtering and b) are comfortable with the command-line, use lilnasy's scribblyscrobbly.
